@@ -33,18 +33,28 @@
                                 $content .= " <i>[download: " . file_get_contents("$obj.$obj1.$obj2") . "]</i>";
                             $content .= "<ul>";
                             $dh3 = @opendir($obj . "/" . $obj1 . "/" . $obj2);
+                            $lineInContentByVersion = array();
                             while (false !== ($obj3 = readdir($dh3) )) {
                                 if ($obj3 == '.' || $obj3 == '..' || $obj3 == 'cgi-bin' || !preg_match("/\.zip$/", $obj3))
                                     continue;
                                 else if (is_file($obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3)) {
                                     $size = filesize($obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3);
                                     $size = ($size > 1000 * 1000) ? (ceil($size / (1000 * 10)) / 100) . " Mo" : (($size > 1000) ? (ceil($size / (10)) / 100) . " ko" : $size . " o");
-                                    $content .= '<li><a href="dl.php?dl=' . $obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3 . '"' . ">$obj3</a> <i>[size: $size]</i></li>";
+                                    $lineInContentByVersion[$obj3] = '<li><a href="dl.php?dl=' . $obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3 . '"' . ">$obj3</a> <i>[size: $size]</i></li>";
                                 }
                             }
+                            $keys = array_keys($lineInContentByVersion);
+                            sort($keys);
+                            foreach ($keys as $key)
+                                $content .= $lineInContentByVersion[$key];
                             $content .= "</ul>";
                             $v = explode("_", $obj2);
-                            $contentByVersion[$v[0]] = $content;
+                            $a = explode(".", $v[0]);
+                            $count = 0;
+                            for($i=0;$i<sizeof($a);$i++) {
+                                $count += (sizeof($a)-$i+1)*1000*intval($a[$i]);
+                            }
+                            $contentByVersion[$count] = $content;
                             closedir($dh3);
                         }
                     }
