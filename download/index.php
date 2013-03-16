@@ -29,13 +29,17 @@
                             continue;
                         else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
                             $content = "$obj / $obj1 / $obj2";
+                            if (is_file("$obj.$obj1.$obj2"))
+                                $content .= " <i>[download: " . file_get_contents("$obj.$obj1.$obj2") . "]</i>";
                             $content .= "<ul>";
                             $dh3 = @opendir($obj . "/" . $obj1 . "/" . $obj2);
                             while (false !== ($obj3 = readdir($dh3) )) {
                                 if ($obj3 == '.' || $obj3 == '..' || $obj3 == 'cgi-bin' || !preg_match("/\.zip$/", $obj3))
                                     continue;
                                 else if (is_file($obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3)) {
-                                    $content .= '<li><a href="dl.php?dl=' . $obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3 . '"' . ">$obj3</a></li>";
+                                    $size = filesize($obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3);
+                                    $size = ($size > 1000 * 1000) ? (ceil($size / (1000 * 10)) / 100) . " Mo" : (($size > 1000) ? (ceil($size / (10)) / 100) . " ko" : $size . " o");
+                                    $content .= '<li><a href="dl.php?dl=' . $obj . "/" . $obj1 . "/" . $obj2 . "/" . $obj3 . '"' . ">$obj3</a> <i>[size: $size]</i></li>";
                                 }
                             }
                             $content .= "</ul>";

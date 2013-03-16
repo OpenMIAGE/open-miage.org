@@ -11,12 +11,7 @@
         while (false !== ($obj = readdir($dh) )) {
             if ($obj == '.' || $obj == '..' || $obj == 'cgi-bin')
                 continue;
-            else if (is_dir($obj)) {
-                ?>
-            <legend>
-                <?= $obj ?>
-            </legend>
-            <?php
+            else if (is_dir($obj)) {                
             $dh1 = @opendir($obj);
             while (false !== ($obj1 = readdir($dh1) )) {
                 if ($obj1 == '.' || $obj1 == '..' || $obj1 == 'cgi-bin')
@@ -29,23 +24,22 @@
                     <?php
                     $contentByVersion = array();
                     $dh2 = @opendir($obj . "/" . $obj1);
-					echo "<ul>";
                     while (false !== ($obj2 = readdir($dh2) )) {
                         if ($obj2 == '.' || $obj2 == '..' || $obj2 == 'cgi-bin')
                             continue;
                         else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
 						
-                            $content = "<li>$obj / $obj1 / <a href='/doc/".$obj . "/" . $obj1 . "/" . $obj2."' target='_parent' onclick=\"window.parent.open(this.href, '_blank');return false\">$obj2</a></li>";
+                            $content = "$obj / $obj1 / <a href='/doc/".$obj . "/" . $obj1 . "/" . $obj2."' target='_parent' onclick=\"window.parent.open(this.href, '_blank');return false\">$obj2</a><br>";
                             $v = explode("_", $obj2);
                             $contentByVersion[$v[0]] = $content;
                         }
                     }
-					echo "</ul>";
                     $keys = array_keys($contentByVersion);
                     rsort($keys);
                     foreach ($keys as $value) {
                         echo $contentByVersion[$value];
                     }
+					echo "<br>";
                     closedir($dh2);
                 }
             }
