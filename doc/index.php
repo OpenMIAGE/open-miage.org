@@ -11,13 +11,13 @@
         while (false !== ($obj = readdir($dh) )) {
             if ($obj == '.' || $obj == '..' || $obj == 'cgi-bin')
                 continue;
-            else if (is_dir($obj)) {                
-            $dh1 = @opendir($obj);
-            while (false !== ($obj1 = readdir($dh1) )) {
-                if ($obj1 == '.' || $obj1 == '..' || $obj1 == 'cgi-bin')
-                    continue;
-                else if (is_dir($obj . "/" . $obj1)) {
-                    ?>
+            else if (is_dir($obj)) {
+                $dh1 = @opendir($obj);
+                while (false !== ($obj1 = readdir($dh1) )) {
+                    if ($obj1 == '.' || $obj1 == '..' || $obj1 == 'cgi-bin')
+                        continue;
+                    else if (is_dir($obj . "/" . $obj1)) {
+                        ?>
                     <legend>
                         <?= $obj . " / " . $obj1 ?>
                     </legend>
@@ -28,10 +28,14 @@
                         if ($obj2 == '.' || $obj2 == '..' || $obj2 == 'cgi-bin')
                             continue;
                         else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
-						
-                            $content = "$obj / $obj1 / <a href='/doc/".$obj . "/" . $obj1 . "/" . $obj2."' target='_parent' onclick=\"window.parent.open(this.href, '_blank');return false\">$obj2</a><br>";
+
+                            $content = "$obj / $obj1 / <a href='/doc/" . $obj . "/" . $obj1 . "/" . $obj2 . "' target='_parent' onclick=\"window.parent.open(this.href, '_blank');return false\">$obj2</a><br>";
                             $v = explode("_", $obj2);
-                            $contentByVersion[$v[0]] = $content;
+                            $a = explode(".", $v[0]);
+                            $count = 0;
+                            for ($i = 0; $i < sizeof($a); $i++)
+                                $count += (sizeof($a) - $i + 1) * 1000 * intval($a[$i]);
+                            $contentByVersion[$count] = $content;
                         }
                     }
                     $keys = array_keys($contentByVersion);
@@ -39,7 +43,7 @@
                     foreach ($keys as $value) {
                         echo $contentByVersion[$value];
                     }
-					echo "<br>";
+                    echo "<br>";
                     closedir($dh2);
                 }
             }
