@@ -52,7 +52,7 @@
                             $a = explode(".", $v[0]);
                             $count = 0;
                             for ($i = 0; $i < sizeof($a); $i++)
-                                $count += (sizeof($a) - $i + 1) * 1000 * intval($a[$i]);
+                                $count += bcpow(1000, (sizeof($a) - $i)) * intval($a[$i]);
                             $contentByVersion[$count] = $content;
                             closedir($dh3);
                         }
