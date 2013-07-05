@@ -4,6 +4,14 @@
  * recover OpenM.util package
  */
 $util = explode("=", file_get_contents("lib/openm.util.dependencies"));
+if ($util[1] == "") {
+    $i = 1;
+    $util[1] = "OpenM.util_" . substr($util[0], strlen("OpenM/util")+1) . ".zip";
+} elseif (substr($util[1], 0, 1) == "*") {
+    $i = 1;
+    $util[1] = str_replace("/", "_", str_replace("/", ".", $util[0], $i)) . substr($util[1], 1);
+}
+
 $lib = "http://open-miage.org/download/" . $util[0] . "/" . $util[1];
 $lib_dir = "../lib";
 if (!is_dir($lib_dir)) {
