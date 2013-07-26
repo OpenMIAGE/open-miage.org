@@ -8,6 +8,7 @@
     <body>   
         <?php
         $dh = @opendir(".");
+        $contentArray = array();
         while (false !== ($obj = readdir($dh) )) {
             if ($obj == '.' || $obj == '..' || $obj == 'cgi-bin')
                 continue;
@@ -17,40 +18,42 @@
                     if ($obj1 == '.' || $obj1 == '..' || $obj1 == 'cgi-bin')
                         continue;
                     else if (is_dir($obj . "/" . $obj1)) {
-                        ?>
-                    <legend>
-                        <?= $obj . " / " . $obj1 ?>
-                    </legend>
-                    <?php
-                    $contentByVersion = array();
-                    $dh2 = @opendir($obj . "/" . $obj1);
-                    while (false !== ($obj2 = readdir($dh2) )) {
-                        if ($obj2 == '.' || $obj2 == '..' || $obj2 == 'cgi-bin')
-                            continue;
-                        else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
+                        $contentByVersion = array();
+                        $dh2 = @opendir($obj . "/" . $obj1);
+                        while (false !== ($obj2 = readdir($dh2) )) {
+                            if ($obj2 == '.' || $obj2 == '..' || $obj2 == 'cgi-bin')
+                                continue;
+                            else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
 
-                            $content = "$obj / $obj1 / <a href='/doc/" . $obj . "/" . $obj1 . "/" . $obj2 . "' target='_parent' onclick=\"window.parent.open(this.href, '_blank');return false\">$obj2</a><br>";
-                            $v = explode("_", $obj2);
-                            $a = explode(".", $v[0]);
-                            $count = 0;
-                            for ($i = 0; $i < sizeof($a); $i++)
-                                $count += bcpow(1000, (sizeof($a) - $i)) * intval($a[$i]);
-                            $contentByVersion[$count] = $content;
+                                $content = "$obj / $obj1 / <a href='/doc/" . $obj . "/" . $obj1 . "/" . $obj2 . "' target='_parent' onclick=\"window.parent.open(this.href, '_blank');return false\">$obj2</a><br>";
+                                $v = explode("_", $obj2);
+                                $a = explode(".", $v[0]);
+                                $count = 0;
+                                for ($i = 0; $i < sizeof($a); $i++)
+                                    $count += bcpow(1000, (sizeof($a) - $i)) * intval($a[$i]);
+                                $contentByVersion[$count] = $content;
+                            }
                         }
+                        $contentArray[$obj . " / " . $obj1] = $contentByVersion;
+                        closedir($dh2);
                     }
-                    $keys = array_keys($contentByVersion);
-                    rsort($keys);
-                    foreach ($keys as $value) {
-                        echo $contentByVersion[$value];
-                    }
-                    echo "<br>";
-                    closedir($dh2);
                 }
+                closedir($dh1);
             }
-            closedir($dh1);
         }
-    }
-    closedir($dh);
-    ?>
-</body>
+        closedir($dh);
+        $contents = array_keys($contentArray);
+        sort($contents);
+        foreach ($contents as $value) {
+            echo "<legend>$value</legend>";
+            $contentByVersion = $contentArray[$value];
+            $keys = array_keys($contentByVersion);
+            rsort($keys);
+            foreach ($keys as $value) {
+                echo $contentByVersion[$value];
+            }
+            echo "<br />";
+        }
+        ?>
+    </body>
 </html>
