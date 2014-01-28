@@ -23,7 +23,11 @@
                         while (false !== ($obj2 = readdir($dh2) )) {
                             if ($obj2 == '.' || $obj2 == '..' || $obj2 == 'cgi-bin')
                                 continue;
-                            else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
+                            else if ($obj2 == "old") {
+                                $content = "$obj / $obj1 => <a href='./$obj/$obj1/$obj2/' target='_blank'>" . htmlentities("archivés") . "</a>";
+                                $contentByVersion["old"] = $content;
+                                continue;
+                            } else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
                                 $content = "$obj / $obj1 / $obj2";
                                 if (is_file("$obj.$obj1.$obj2"))
                                     $content .= " <i>[download: " . file_get_contents("$obj.$obj1.$obj2") . "]</i>";
@@ -69,7 +73,7 @@
             $keys = array_keys($contentByVersion);
             rsort($keys);
             foreach ($keys as $value) {
-                echo $contentByVersion[$value] ;
+                echo $contentByVersion[$value];
             }
             echo "<br />";
         }
