@@ -29,8 +29,8 @@
                                 continue;
                             } else if (is_dir($obj . "/" . $obj1 . "/" . $obj2)) {
                                 $content = "$obj / $obj1 / $obj2";
-                                if (is_file("$obj.$obj1.$obj2"))
-                                    $content .= " <i>[download: " . file_get_contents("$obj.$obj1.$obj2") . "]</i>";
+                                if (is_file(".dl/$obj.$obj1.$obj2"))
+                                    $content .= " <i>[download: " . file_get_contents(".dl/$obj.$obj1.$obj2") . "]</i>";
                                 $content .= "<ul>";
                                 $dh3 = @opendir($obj . "/" . $obj1 . "/" . $obj2);
                                 $lineInContentByVersion = array();

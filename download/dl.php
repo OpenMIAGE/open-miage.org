@@ -4,7 +4,7 @@ if (!isset($_GET["dl"]))
     die("error");
 $zip = $_GET["dl"];
 $a = explode("/", $zip);
-$file = $a[0] . "." . $a[1] . "." . $a[2];
+$file = ".dl/" . $a[0] . "." . $a[1] . "." . $a[2];
 if (!is_file($file))
     file_put_contents($file, "1");
 else {
